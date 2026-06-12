@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Campus Navigator</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Optional Routing Machine -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+  <style>
+    :root{--accent:#0077ff}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:#f4f6f8;
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+    header{
+      background:var(--accent);
+      color:#fff;
+      padding:10px 14px;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    header h1{font-size:1.05rem;margin:0}
+
+    /* Admin button */
+    #adminBtn{
+      background:#fff;
+      color:var(--accent);
+      border:none;
+      padding:6px 12px;
+      border-radius:6px;
+      font-size:0.85rem;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    #controls{
+      display:flex;
+      gap:8px;
+      padding:10px;background:#fff;
+      align-items:center;
+    }
+
+    #searchBox{
+      flex:1;padding:8px 10px;
+      border:1px solid #ddd;border-radius:8px;
+    }
+    button{
+      background:var(--accent);
+      color:white;border:none;padding:8px 10px;
+      border-radius:8px;cursor:pointer
+    }
+    #floorButtons{display:flex;gap:6px}
+    #map{flex:1;min-height:0}
+
+    #infoPanel{
+      position:absolute;
+      left:50%;transform:translateX(-50%);
+      bottom:18px;background:#fff;padding:10px 14px;
+      border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.12);
+      z-index:1000;min-width:280px;text-align:center
+    }
+    #gpsStatus{font-weight:600;color:var(--accent);margin-bottom:6px}
+    #guidanceText{color:#333}
+
+    .floor-btn{
+      background:#eee;color:#111;
+      padding:6px 10px;border-radius:8px;
+      border:1px solid #ddd;
+    }
+    .floor-btn.active{
+      background:var(--accent);color:#fff
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🏫 Campus Navigator</h1>
+
+    <!-- Admin Panel Button -->
+    <button id="adminBtn" onclick="openAdminPanel()">Admin Panel</button>
+  </header>
+
+  <div id="controls">
+    <input id="searchBox" placeholder="Search room name (e.g. C001, A303)" />
+    <button onclick="onSearch()">Search</button>
+
+    <div id="floorButtons">
+      <button class="floor-btn active" data-floor="0" onclick="switchFloor(0)">Ground</button>
+      <button class="floor-btn" data-floor="1" onclick="switchFloor(1)">1st</button>
+      <button class="floor-btn" data-floor="2" onclick="switchFloor(2)">2nd</button>
+      <button class="floor-btn" data-floor="3" onclick="switchFloor(3)">3rd</button>
+    </div>
+  </div>
+
+  <div id="map"></div>
+
+  <div id="infoPanel">
+    <div id="gpsStatus">Waiting for GPS / QR...</div>
+    <div id="guidanceText">No route yet.</div>
+  </div>
+
+  <!-- Main App JS -->
+  <script src="app.js"></script>
+
+  <!-- Admin Panel Logic (DB-based verification) -->
+  <script>
+    function openAdminPanel() {
+      const password = prompt("Enter admin password:");
+      if (password === null) return;
+
+      fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = "admin.html";
+        } else {
+          alert("Incorrect password!");
+        }
+      })
+      .catch(() => alert("Server error while verifying password"));
+    }
+  </script>
+
+</body>
+</html>

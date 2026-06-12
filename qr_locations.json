@@ -1,0 +1,30 @@
+  [
+  {
+    "id": "A303",
+    "label": "A303 Entrance",
+    "latitude": 12.304134991935081,
+    "longitude": 76.71191831079517,
+    "floor": 3
+  },
+  {
+    "id": "Lobby",
+    "label": "lobby-entrance",
+    "latitude": 12.304146420479169,
+    "longitude": 76.71136177391223,
+    "floor": 0
+  },
+  {
+    "id": "library",
+    "label": "Library Entrance",
+    "latitude": 12.303948672360505,
+    "longitude": 76.71148786578921,
+    "floor": 0
+  },
+  {
+    "id": "C001",
+    "label": "class room entrance",
+    "latitude": 12.303948032512906,
+    "longitude": 76.71072871456698,
+    "floor": 0
+  }
+]
